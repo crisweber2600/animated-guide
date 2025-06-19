@@ -24,12 +24,11 @@ public class ScanOrchestrator
 
         if (link)
         {
-            using var queue = new WorkerQueue(parallel);
+            await using var queue = new WorkerQueue(parallel);
             foreach (var g in groups)
             {
                 await queue.EnqueueAsync(() => _linker.LinkAsync(g));
             }
-            await queue.DisposeAsync();
         }
 
         return groups;

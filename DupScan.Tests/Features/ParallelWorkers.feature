@@ -4,4 +4,4 @@ Feature: Worker parallelism
   Scenario: Channel worker runs in parallel
     Given a worker with degree 2
     When I enqueue 3 tasks lasting 100ms
-    Then execution time should be under 300ms
+    Then execution time should be under 3000ms

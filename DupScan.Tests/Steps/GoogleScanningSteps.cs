@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DupScan.Core.Models;
-using DupScan.Google;
 using DupScan.Tests.Integration;
+using DupScan.Google;
+using GoogleService = DupScan.Tests.Integration.HttpGoogleDriveService;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 using Reqnroll;
 using Xunit;
@@ -38,7 +39,7 @@ public class GoogleScanningSteps : IDisposable
     public async Task WhenIScanGoogleDrive()
     {
         if (_server == null) throw new InvalidOperationException("Server not started");
-        var service = new HttpGoogleDriveService(_server.Url);
+        var service = new GoogleService(_server.Url);
         var scanner = new GoogleScanner(service);
         _result = await scanner.ScanAsync();
     }

@@ -1,14 +1,15 @@
 using System.CommandLine;
+using System.IO;
 using DupScan.Core.Models;
 using DupScan.Core.Services;
 using DupScan.Graph;
-using DupScan.Google;
-using Microsoft.Extensions.DependencyInjection;
 
 var outOption = new Option<FileInfo?>("--out", "CSV output file path");
-var root = new RootCommand("Duplicate scanner") { outOption };
+var linkOption = new Option<bool>("--link", "Replace duplicates with shortcuts");
+var graphUrlOption = new Option<string>("--graph-url", () => "http://localhost:5000", "Graph service base URL");
+var root = new RootCommand("Duplicate scanner") { outOption, linkOption, graphUrlOption };
 
-root.SetHandler((FileInfo? outFile) =>
+root.SetHandler(async (FileInfo? outFile, bool link, string graphUrl) =>
 {
     var detector = new DuplicateDetector();
     var files = new[]
@@ -20,14 +21,24 @@ root.SetHandler((FileInfo? outFile) =>
     var groups = detector.FindDuplicates(files);
     Console.WriteLine($"Found {groups.Count} duplicate group(s).");
 
+    if (link)
+    {
+        var drive = new HttpGraphDriveService(graphUrl);
+        var linker = new GraphLinkService(drive);
+        foreach (var g in groups)
+        {
+            await linker.LinkAsync(g);
+        }
+    }
+
     if (outFile is not null)
     {
         using var writer = outFile.CreateText();
         CsvExporter.WriteSummary(groups, writer);
         Console.WriteLine($"Wrote summary to {outFile.FullName}");
     }
-}, outOption);
+}, outOption, linkOption, graphUrlOption);
 
-return root.Invoke(args);
+return await root.InvokeAsync(args);
 
 

@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DupScan.Core.Models;
 using DupScan.Graph;
-using Moq;
+using DupScan.Tests.Integration;
 using Reqnroll;
 using Xunit;
 using System.Threading.Tasks;
@@ -9,10 +12,10 @@ using System.Threading.Tasks;
 namespace DupScan.Tests.Steps;
 
 [Binding]
-public class GraphLinkingSteps
+public class GraphLinkingSteps : IDisposable
 {
     private readonly List<FileItem> _files = new();
-    private readonly Mock<IGraphDriveService> _mock = new();
+    private GraphWireMockServer? _server;
 
     [Given("duplicate files")]
     public void GivenDuplicateFiles(Table table)
@@ -30,15 +33,27 @@ public class GraphLinkingSteps
     [When("I link duplicates on Graph")]
     public async Task WhenILinkDuplicatesOnGraph()
     {
+        if (_server == null)
+        {
+            _server = new GraphWireMockServer();
+            _server.ExpectShortcut(_files[0].Id, _files[1].Id);
+        }
+
         var group = new DuplicateGroup("h1", _files);
-        var linker = new GraphLinkService(_mock.Object);
+        var service = new HttpGraphDriveService(_server.Url);
+        var linker = new GraphLinkService(service);
         await linker.LinkAsync(group);
     }
 
     [Then("the drive service should link (.*) to (.*)")]
     public void ThenTheDriveServiceShouldLink(string sourceId, string targetId)
     {
-        _mock.Verify(m => m.CreateShortcutAsync(sourceId, targetId), Times.Once);
-        _mock.Verify(m => m.DeleteItemAsync(sourceId), Times.Once);
+        Assert.Equal(1, _server?.Server.LogEntries.Count(l => l.RequestMessage.Path == $"/drive/items/{sourceId}/shortcut"));
+        Assert.Equal(1, _server?.Server.LogEntries.Count(l => l.RequestMessage.Path == $"/drive/items/{sourceId}" && l.RequestMessage.Method == "DELETE"));
+    }
+
+    public void Dispose()
+    {
+        _server?.Dispose();
     }
 }

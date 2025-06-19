@@ -4,7 +4,8 @@ DupScan is an example solution demonstrating a multi-project layout using .NET 9
 It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis.
-The scanning services illustrate how to integrate with both Microsoft Graph and Google Drive.
+The test suite now ships with lightweight HTTP servers built using WireMock.Net,
+enabling realistic integration scenarios without hitting external APIs.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -17,6 +18,8 @@ The scanning services illustrate how to integrate with both Microsoft Graph and 
 - **DupScan.Google** adds a matching link service for Google Drive files.
 - **DupScan.Cli** – command-line entry point built with System.CommandLine.
 - **DupScan.Tests** – xUnit and Reqnroll test suite with code coverage.
+- **Integration Servers** – WireMock-based Graph and Google mocks under
+  `DupScan.Tests/Integration` used by BDD scenarios.
 
 ## Getting Started
 1. Run `dotnet restore` to download dependencies.
@@ -27,8 +30,7 @@ The scanning services illustrate how to integrate with both Microsoft Graph and 
 6. Review coverage results in the generated `TestResults` directory.
 7. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 8. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-9. Explore the new linking scenarios under `DupScan.Tests/Features` to see provider specific behavior.
-10. Maintain coverage above 80% to meet the repository guidelines.
+9. Execute only integration tests with `dotnet test --filter Category=integration`.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -45,16 +47,18 @@ detection.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
-drive service to create the shortcut and delete the redundant file. The new
-`GoogleLinkService` follows the same pattern for Google Drive to keep APIs
-consistent across providers. BDD features demonstrate how duplicate sets are
-reduced to a single master file while the extras are replaced with native
-shortcuts.
+drive service to create the shortcut and delete the redundant file.
+Integration tests verify these HTTP interactions using the embedded Graph server.
 
 ## Google Drive Scanning
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
-credentials. Drive files are converted to `FileItem` objects for detection and
-can be linked using the new linking service.
+credentials. Drive files are converted to `FileItem` objects for detection.
+The integration server returns stubbed JSON allowing tests to run offline.
+
+## Extending Scenarios
+Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
+WireMock servers automatically respond using the provided tables making it easy
+to model different drive contents.
 
 
 ## CLI Hints

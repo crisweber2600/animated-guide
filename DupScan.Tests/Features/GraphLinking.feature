@@ -1,6 +1,7 @@
 Feature: Graph linking
   Replaces duplicate files with Graph shortcuts.
 
+  @integration
   Scenario: Linking duplicates
     Given duplicate files
       | Id | Path | Hash | Size |

@@ -1,8 +1,8 @@
 using System.Text.Json;
 using DriveItem = Microsoft.Graph.Models.DriveItem;
 using WireMock.Server;
-using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMockRequest = WireMock.RequestBuilders.Request;
 
 namespace DupScan.Tests.Integration;
 
@@ -20,7 +20,7 @@ public class GraphWireMockServer : IDisposable
     public void SetupChildren(IEnumerable<DriveItem> items)
     {
         var body = JsonSerializer.Serialize(new { value = items });
-        Server.Given(Request.Create().WithPath("/drive/root/children").UsingGet())
+        Server.Given(WireMockRequest.Create().WithPath("/drive/root/children").UsingGet())
               .RespondWith(Response.Create().WithBody(body).WithHeader("Content-Type", "application/json"));
     }
 
@@ -31,7 +31,7 @@ public class GraphWireMockServer : IDisposable
                 .UsingPost()
                 .WithBody($"{{\"targetId\":\"{targetId}\"}}"))
               .RespondWith(Response.Create().WithStatusCode(200));
-        Server.Given(Request.Create().WithPath($"/drive/items/{sourceId}").UsingDelete())
+        Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}").UsingDelete())
               .RespondWith(Response.Create().WithStatusCode(200));
     }
 

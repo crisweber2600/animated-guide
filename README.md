@@ -5,6 +5,7 @@ It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis and the
 CLI can write summaries with the `--out` option.
+The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -22,6 +23,7 @@ CLI can write summaries with the `--out` option.
 
 ## Getting Started
 1. Run `dotnet restore` to download dependencies.
+   Use `dotnet restore -warnaserror` to catch version conflicts early.
 2. Build the solution with `dotnet build DupScan.sln`.
 3. Execute the CLI project using `dotnet run --project DupScan.Cli`.
 4. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
@@ -61,6 +63,13 @@ BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows us
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
 credentials. Drive files are converted to `FileItem` objects for detection.
 The integration server returns stubbed JSON allowing tests to run offline.
+`GoogleDriveService` now creates shortcut files referencing the largest copy and
+removes the duplicates using the Drive API. Unit tests assert that the expected
+HTTP endpoints are invoked for each operation.
+
+When running locally you can swap in the `HttpGoogleDriveService` from the test
+project to point at a mock WireMock server. This makes it easy to develop
+against predictable Drive responses without network access.
 
 ## Orchestration
 `Orchestrator` aggregates results from any number of scanners and can invoke provider-specific link services.
@@ -82,12 +91,14 @@ to model different drive contents.
   space.
 - Specify provider roots to limit scanning to certain directories.
 - Provide one or more roots using `--root <path>` to scan specific folders.
+- Use `--link` to automatically replace redundant files with symbolic links.
+- Increase throughput with `--parallel 4` when linking many groups.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
+- Services are resolved via dependency injection, making customization easy.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
-- Use `--dry-run` with `--link` to preview shortcut creation without altering any files.
-- Set `GRAPH_CACHE_PATH` to change where Microsoft Graph token caches are stored.
-- Increase build messages with `dotnet build --verbosity detailed` when troubleshooting.
-- On Windows run `dotnet publish -r win-x64` to create a self-contained `DupScan.Cli.exe`.
+- Multi-provider scenarios demonstrate parallel scanning across Google and Graph.
+- New `CliLinking` tests run the command line with `--link` against a WireMock server.
+- The repo ships lightweight HTTP services for use with integration tests.
 

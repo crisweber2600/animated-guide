@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DupScan.Core.Models;
-using DupScan.Graph;
 using DupScan.Tests.Integration;
+using DupScan.Graph;
+using GraphService = DupScan.Tests.Integration.HttpGraphDriveService;
 using Reqnroll;
 using Xunit;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ public class GraphLinkingSteps : IDisposable
         }
 
         var group = new DuplicateGroup("h1", _files);
-        var service = new HttpGraphDriveService(_server.Url);
+        var service = new GraphService(_server.Url);
         var linker = new GraphLinkService(service);
         await linker.LinkAsync(group);
     }

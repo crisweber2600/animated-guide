@@ -28,6 +28,7 @@ public class CsvExportSteps
             for (int i = 2; i < count; i++)
             {
                 files.Add(new FileItem(i.ToString(), $"f{i}", row["Hash"], 0));
+
             }
             _groups.Add(new DuplicateGroup(row["Hash"], files));
         }

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Include>
+            <ModulePath>.*DupScan.Core.*</ModulePath>
+            <ModulePath>.*DupScan.Cli.*</ModulePath>
+          </Include>
+          <Exclude>
+            <ModulePath>.*Tests.*</ModulePath>
+          </Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

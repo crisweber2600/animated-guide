@@ -20,8 +20,8 @@ public static class GraphClientFactory
         {
             TenantId = tenantId,
             ClientId = clientId,
-            DeviceCodeCallback = (info, _) =>
-            {
+            DeviceCodeCallback = (info, ct) =>
+     {
                 Console.WriteLine(info.Message);
                 return Task.CompletedTask;
             }

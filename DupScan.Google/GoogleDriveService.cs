@@ -38,4 +38,16 @@ public class GoogleDriveService : IGoogleDriveService
 
         return files;
     }
+
+    public Task CreateShortcutAsync(string fileId, string targetId)
+    {
+        // TODO: call Google Drive API to replace the file with a shortcut
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteFileAsync(string fileId)
+    {
+        // TODO: delete the specified file
+        return Task.CompletedTask;
+    }
 }

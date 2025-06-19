@@ -1,0 +1,85 @@
+version: 1
+
+# Setup tasks
+- id: install-dotnet-9
+  name: Install .NET 9 SDK
+  run: ./dotnet-install.sh --channel 9.0
+
+- id: restore
+  name: Restore dependencies
+  run: dotnet restore DupScan.sln
+
+- id: build
+  name: Build solution
+  run: dotnet build DupScan.sln --no-restore
+
+- id: test
+  name: Run tests with coverage
+  run: dotnet test DupScan.sln --no-build --no-restore --collect:"XPlat Code Coverage"
+
+# Manual tasks
+- id: register-azure-app
+  name: Register Azure AD App
+  manual: true
+  description: |
+    Human must register an Azure AD application, grant Files.Read.All and Files.ReadWrite.All permissions, and configure credentials in appsettings.json.
+
+- id: register-google-app
+  name: Register Google OAuth App
+  manual: true
+  description: |
+    Human must create a Google OAuth 2.0 Desktop application, download credentials JSON, and store in appsettings.json.
+
+# Implementation tasks
+- id: add-bdd-features
+  name: Add BDD feature files and step definitions
+  run: |
+    mkdir -p DupScan.Tests/Features
+    echo "Feature: Duplicate discovery" > DupScan.Tests/Features/DuplicatedFiles.feature
+    echo "Scenario: TBD" >> DupScan.Tests/Features/DuplicatedFiles.feature
+
+- id: implement-core-models
+  name: Implement core domain models
+  run: echo "// TODO: implement DriveFile and DuplicateGroup" >> DupScan.Core/Class1.cs
+
+- id: implement-scanners
+  name: Implement GraphScanner and GoogleScanner adapters
+  run: echo "// TODO: implement scanners" >> DupScan.Adapters/Class1.cs
+
+- id: implement-orchestration
+  name: Implement ScanCoordinator and DuplicateDetector
+  run: echo "// TODO: implement orchestration" >> DupScan.Orchestration/Class1.cs
+
+- id: implement-cli
+  name: Wire up CLI using System.CommandLine
+  run: echo "// TODO: implement CLI" >> DupScan.Cli/Program.cs
+
+- id: update-readme
+  name: Update README with instructions and dotnet 9 references
+  run: echo "\nUpdated README" >> README.md
+
+- id: dockerfile
+  name: Create Dockerfile
+  run: echo "FROM mcr.microsoft.com/dotnet/runtime:9.0" > Dockerfile
+
+- id: github-actions
+  name: Setup GitHub Actions workflow for .NET 9
+  run: |
+    mkdir -p .github/workflows
+    cat <<'EOS' > .github/workflows/dotnet.yml
+    name: .NET
+    on: [push]
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+          - uses: actions/setup-dotnet@v4
+            with:
+              dotnet-version: '9.0.x'
+          - run: dotnet restore DupScan.sln
+          - run: dotnet build DupScan.sln --no-restore
+          - run: dotnet test DupScan.sln --no-build --no-restore --collect:"XPlat Code Coverage"
+    EOS
+
+

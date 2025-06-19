@@ -46,11 +46,12 @@ slipping in.
 `GraphClientFactory` builds a `GraphServiceClient` using `DeviceCodeCredential`.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
+`GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
 drive service to create the shortcut and delete the redundant file.
-Integration tests verify these HTTP interactions using the embedded Graph server.
+BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows using the Reqnroll test runner.
 
 ## Google Drive Scanning
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
@@ -74,21 +75,5 @@ to model different drive contents.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
-
-
-## Docker Usage
-1. If the .NET SDK is missing, run `./dotnet-install.sh` to install locally.
-2. Build the container with `docker build -t dupsan .`.
-3. Run tests inside CI with `dotnet test --collect:"XPlat Code Coverage"`.
-4. Execute the image using `docker run --rm dupsan`.
-5. Provide credentials in `appsettings.json` or mount one via `-v $(pwd)/appsettings.json:/app/appsettings.json`.
-
-These steps show how to run the CLI without installing the SDK globally.
-
-## Improvements
-- Added a ready-to-use `Dockerfile` for container builds.
-- New CI workflow pushes images to Docker Hub.
-- Template `appsettings.json` clarifies required credentials.
-- Documented Docker build and run instructions.
-- Provided a reminder to use `dotnet-install.sh` when needed.
+- You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
 

@@ -7,6 +7,13 @@ The `CsvHelper` package is used to export results for further analysis and the
 CLI can write summaries with the `--out` option.
 The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 
+## Project Goals
+- Showcase how to organize a .NET 9 solution with several cooperating projects.
+- Demonstrate duplicate detection across Microsoft Graph and Google Drive.
+- Provide BDD scenarios that document expected behavior.
+- Offer a CLI capable of scanning and linking duplicates.
+- Keep code coverage above 80% with automated tests.
+
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
 - **DupScan.Adapters** – infrastructure and external integrations.
@@ -25,20 +32,21 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 1. Run `dotnet restore` to download dependencies.
    Use `dotnet restore -warnaserror` to catch version conflicts early.
 2. Build the solution with `dotnet build DupScan.sln`.
-3. Execute the CLI project using `dotnet run --project DupScan.Cli`.
-4. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
-5. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
-6. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
-7. Review coverage results in the generated `TestResults` directory.
-8. Limit coverage calculation to core projects via `--settings coverlet.runsettings`.
-9. Format source files with `dotnet format` before committing.
-10. Set `DOTNET_CLI_UI_LANGUAGE=en` to suppress localization noise during builds.
-11. Build the Docker image with `docker build -t dupscan .` for containerized runs.
-12. The `CliLinking` scenario demonstrates Graph shortcut creation using a mock server.
-8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
-9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-10. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
-11. Combine providers with the orchestrator service to analyze multiple drives.
+3. Update `appsettings.json` with your Graph and Google credentials.
+4. Execute the CLI project using `dotnet run --project DupScan.Cli`.
+5. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
+6. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
+7. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
+8. Review coverage results in the generated `TestResults` directory.
+9. Limit coverage calculation to core projects via `--settings coverlet.runsettings`.
+10. Format source files with `dotnet format` before committing.
+11. Set `DOTNET_CLI_UI_LANGUAGE=en` to suppress localization noise during builds.
+12. Build the Docker image with `docker build -t dupscan .` for containerized runs.
+13. The `CliLinking` scenario demonstrates Graph shortcut creation using a mock server.
+14. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
+15. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+16. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
+17. Combine providers with the orchestrator service to analyze multiple drives.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -86,6 +94,12 @@ WireMock servers automatically respond using the provided tables making it easy
 to model different drive contents.
 - New orchestration scenarios demonstrate how multiple providers work together.
 
+## Codex Tasks
+Run `codex tasks` to list available tasks. Key ones include:
+- `install-dotnet-9` to install the required SDK
+- `restore` and `build` for setup
+- `test` to run the suite with coverage
+- `register-azure-app` and `register-google-app` to configure credentials
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.

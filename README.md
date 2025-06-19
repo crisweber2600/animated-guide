@@ -30,6 +30,11 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 5. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
 6. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
 7. Review coverage results in the generated `TestResults` directory.
+8. Limit coverage calculation to core projects via `--settings coverlet.runsettings`.
+9. Format source files with `dotnet format` before committing.
+10. Set `DOTNET_CLI_UI_LANGUAGE=en` to suppress localization noise during builds.
+11. Build the Docker image with `docker build -t dupscan .` for containerized runs.
+12. The `CliLinking` scenario demonstrates Graph shortcut creation using a mock server.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
 10. Verify your environment with `dotnet test --no-build --no-restore` before making changes.

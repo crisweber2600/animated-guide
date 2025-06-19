@@ -47,6 +47,11 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 15. Customize provider roots and enable linking with `--link` and `--parallel` flags.
 16. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
 17. Combine providers with the orchestrator service to analyze multiple drives.
+18. Run `dotnet restore` before building to ensure all NuGet packages are available.
+19. `WorkerQueue` enables parallel linking by processing duplicate groups concurrently.
+20. Test coverage reports are stored under `DupScan.Tests/TestResults` for review.
+21. Use `GRAPH_BASEURL` to override the default Graph service URL during local testing.
+22. The CI workflow automatically runs `dotnet format` and the full test suite.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -64,6 +69,7 @@ slipping in.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
 `GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
+If the base URL is not configured the service falls back to an empty string so tests can run without real credentials.
 Delete the cached authentication files in `~/.azure` if you need to reauthenticate with different credentials.
 You can pass a custom callback to `GraphClientFactory.Create` if you need to modify the device-code sign-in message or log additional details.
 

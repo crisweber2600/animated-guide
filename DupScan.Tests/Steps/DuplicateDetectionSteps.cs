@@ -12,7 +12,7 @@ public class DuplicateDetectionSteps
     private readonly List<FileItem> _files = new();
     private IReadOnlyList<DuplicateGroup> _result = new List<DuplicateGroup>();
 
-    [Given("the following files")] 
+    [Given("the following files")]
     public void GivenTheFollowingFiles(Table table)
     {
         foreach (var row in table.Rows)

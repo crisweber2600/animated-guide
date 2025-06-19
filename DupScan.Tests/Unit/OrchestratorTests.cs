@@ -40,8 +40,8 @@ public class OrchestratorTests
     [Fact]
     public async Task RunAsync_links_duplicates_when_enabled()
     {
-        var file1 = new FileItem("1","a","h1",1);
-        var file2 = new FileItem("2","b","h1",2);
+        var file1 = new FileItem("1", "a", "h1", 1);
+        var file2 = new FileItem("2", "b", "h1", 2);
         var scanner = new Mock<IScanner>();
         scanner.Setup(s => s.ScanAsync()).ReturnsAsync(new[] { file1, file2 });
         var linker = new Mock<ILinkService>();
@@ -55,8 +55,8 @@ public class OrchestratorTests
     [Fact]
     public async Task RunAsync_does_not_link_across_providers()
     {
-        var file1 = new FileItem("1","a","h1",1);
-        var file2 = new FileItem("2","b","h1",2);
+        var file1 = new FileItem("1", "a", "h1", 1);
+        var file2 = new FileItem("2", "b", "h1", 2);
         var s1 = new Mock<IScanner>();
         s1.Setup(s => s.ScanAsync()).ReturnsAsync(new[] { file1 });
         var l1 = new Mock<ILinkService>();

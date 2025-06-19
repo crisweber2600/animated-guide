@@ -22,9 +22,9 @@ public static class GraphClientFactory
             ClientId = clientId,
             DeviceCodeCallback = (info, ct) =>
      {
-                Console.WriteLine(info.Message);
-                return Task.CompletedTask;
-            }
+         Console.WriteLine(info.Message);
+         return Task.CompletedTask;
+     }
         };
 
         var credential = new DeviceCodeCredential(options);

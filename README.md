@@ -4,6 +4,8 @@ DupScan is an example solution demonstrating a multi-project layout using .NET 9
 It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis.
+The repo demonstrates both Google Drive and Microsoft Graph integrations and the
+tests use Reqnroll for behavior specifications.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -24,6 +26,7 @@ The `CsvHelper` package is used to export results for further analysis.
 6. Review coverage results in the generated `TestResults` directory.
 7. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 8. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+9. Restore global tools with `dotnet tool restore` if required for decompilation or other utilities.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -37,10 +40,12 @@ Graph responses with Moq to validate scanning logic.
 `GraphClientFactory` builds a `GraphServiceClient` using `DeviceCodeCredential`.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
+`GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
 drive service to create the shortcut and delete the redundant file.
+BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows using the Reqnroll test runner.
 
 ## Google Drive Scanning
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
@@ -52,3 +57,4 @@ credentials. Drive files are converted to `FileItem` objects for detection.
 - Specify provider roots to limit scanning to certain directories.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
+- You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.

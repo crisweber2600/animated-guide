@@ -19,8 +19,11 @@ Feature: Duplicate detection
       | 2  | /b   | h1   | 20   |
       | 3  | /c   | h2   | 30   |
       | 4  | /d   | h2   | 40   |
+      | 5  | /e   | h3   | 5    |
+      | 6  | /f   | h3   | 15   |
     When I detect duplicates
     Then groups should be ordered by recoverable bytes
       | Hash | Recoverable |
       | h2   | 30 |
       | h1   | 10 |
+      | h3   | 5  |

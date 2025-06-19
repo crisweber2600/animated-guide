@@ -30,6 +30,7 @@ CLI can write summaries with the `--out` option.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+10. Swap the default HTTP handlers with a custom factory when unit testing service classes.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -57,6 +58,13 @@ BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows us
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
 credentials. Drive files are converted to `FileItem` objects for detection.
 The integration server returns stubbed JSON allowing tests to run offline.
+`GoogleDriveService` now creates shortcut files referencing the largest copy and
+removes the duplicates using the Drive API. Unit tests assert that the expected
+HTTP endpoints are invoked for each operation.
+
+When running locally you can swap in the `HttpGoogleDriveService` from the test
+project to point at a mock WireMock server. This makes it easy to develop
+against predictable Drive responses without network access.
 
 ## Extending Scenarios
 Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
@@ -76,4 +84,9 @@ to model different drive contents.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
+- Use the `--link` flag with the Google provider to automatically replace copies
+  with Drive shortcuts.
+- Integration servers under `DupScan.Tests/Integration` make it simple to mock
+  Graph or Google endpoints when experimenting.
+- Run `dotnet test` after adding features to ensure new scenarios remain green.
 

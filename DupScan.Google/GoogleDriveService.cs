@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Apis.Drive.v3;
 using GoogleFile = Google.Apis.Drive.v3.Data.File;
+using GoogleApiException = Google.GoogleApiException;
 
 namespace DupScan.Google;
 
@@ -39,15 +40,47 @@ public class GoogleDriveService : IGoogleDriveService
         return files;
     }
 
-    public Task CreateShortcutAsync(string fileId, string targetId)
+    public async Task CreateShortcutAsync(string fileId, string targetId)
     {
-        // TODO: call Google Drive API to replace the file with a shortcut
-        return Task.CompletedTask;
+        try
+        {
+            var get = _service.Files.Get(fileId);
+            get.Fields = "name,parents";
+            var original = await get.ExecuteAsync().ConfigureAwait(false);
+
+            var shortcut = new GoogleFile
+            {
+                Name = original.Name,
+                MimeType = "application/vnd.google-apps.shortcut",
+                ShortcutDetails = new GoogleFile.ShortcutDetailsData
+                {
+                    TargetId = targetId
+                },
+                Parents = original.Parents
+            };
+
+            var create = _service.Files.Create(shortcut);
+            create.Fields = "id";
+            await create.ExecuteAsync().ConfigureAwait(false);
+
+            await DeleteFileAsync(fileId).ConfigureAwait(false);
+        }
+        catch (GoogleApiException ex)
+        {
+            throw new InvalidOperationException($"Failed to create shortcut for {fileId}", ex);
+        }
     }
 
-    public Task DeleteFileAsync(string fileId)
+    public async Task DeleteFileAsync(string fileId)
     {
-        // TODO: delete the specified file
-        return Task.CompletedTask;
+        try
+        {
+            var request = _service.Files.Delete(fileId);
+            await request.ExecuteAsync().ConfigureAwait(false);
+        }
+        catch (GoogleApiException ex)
+        {
+            throw new InvalidOperationException($"Failed to delete file {fileId}", ex);
+        }
     }
 }

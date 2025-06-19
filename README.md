@@ -30,6 +30,7 @@ CLI can write summaries with the `--out` option.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+10. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -47,6 +48,8 @@ slipping in.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
 `GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
+Delete the cached authentication files in `~/.azure` if you need to reauthenticate with different credentials.
+You can pass a custom callback to `GraphClientFactory.Create` if you need to modify the device-code sign-in message or log additional details.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
@@ -76,4 +79,8 @@ to model different drive contents.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
+- Use `--dry-run` with `--link` to preview shortcut creation without altering any files.
+- Set `GRAPH_CACHE_PATH` to change where Microsoft Graph token caches are stored.
+- Increase build messages with `dotnet build --verbosity detailed` when troubleshooting.
+- On Windows run `dotnet publish -r win-x64` to create a self-contained `DupScan.Cli.exe`.
 

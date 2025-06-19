@@ -4,6 +4,7 @@ DupScan is an example solution demonstrating a multi-project layout using .NET 9
 It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis.
+The scanning services illustrate how to integrate with both Microsoft Graph and Google Drive.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -54,6 +55,7 @@ shortcuts.
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
 credentials. Drive files are converted to `FileItem` objects for detection and
 can be linked using the new linking service.
+
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.

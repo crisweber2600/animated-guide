@@ -59,6 +59,7 @@ can be linked using the new linking service.
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
+- Enable automatic linking of duplicates with `--link`.
 - `--parallel` controls the worker channel degree of parallelism.
 - The core library now provides a `WorkerQueue` based on `System.Threading.Channels`.
 - Google and Graph scanners automatically retry with quadratic back-off when 429 or 5xx errors occur.
@@ -66,7 +67,10 @@ can be linked using the new linking service.
 - Run `dotnet test` anytime you modify the code to ensure behavior remains correct.
 - Explore the CLI with `--verbose` to see back-off and parallelism in action.
 - Specify provider roots to limit scanning to certain directories.
+- Provide one or more roots using `--root <path>` to scan specific folders.
+- Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
-- Use the test steps in `GraphLinkingSteps.cs` and `GoogleLinkingSteps.cs` as a
-  reference when adding new providers.
+The CLI is wired up using `Microsoft.Extensions.DependencyInjection` so services
+like `GraphScanner`, `GoogleScanner` and `GraphLinkService` are resolved
+automatically.

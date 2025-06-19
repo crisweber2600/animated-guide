@@ -48,6 +48,8 @@ slipping in.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
 `GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
+Delete the cached authentication files in `~/.azure` if you need to reauthenticate with different credentials.
+You can pass a custom callback to `GraphClientFactory.Create` if you need to modify the device-code sign-in message or log additional details.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
@@ -89,4 +91,3 @@ to model different drive contents.
 - Integration servers under `DupScan.Tests/Integration` make it simple to mock
   Graph or Google endpoints when experimenting.
 - Run `dotnet test` after adding features to ensure new scenarios remain green.
-

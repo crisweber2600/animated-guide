@@ -32,9 +32,10 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-10. Verify package versions with `dotnet list package --outdated` to stay current.
-11. Upgrade references when restore warnings like NU1603 or NU1902 appear.
-12. Keep an eye on advisory notices for security patches in Azure and Google SDKs.
+10. Use `--graph-url` when testing against the bundled WireMock server.
+11. Combine Google and Graph results by scanning both providers in parallel.
+12. Run `dotnet test --collect:"XPlat Code Coverage"` to confirm coverage exceeds 80%.
+13. Pass `--link` to automatically replace smaller duplicates with shortcuts.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -93,8 +94,7 @@ to model different drive contents.
 - Services are resolved via dependency injection, making customization easy.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
-- Use the `--link` flag with the Google provider to automatically replace copies
-  with Drive shortcuts.
-- Integration servers under `DupScan.Tests/Integration` make it simple to mock
-  Graph or Google endpoints when experimenting.
-- Run `dotnet test` after adding features to ensure new scenarios remain green.
+- Multi-provider scenarios demonstrate parallel scanning across Google and Graph.
+- New `CliLinking` tests run the command line with `--link` against a WireMock server.
+- The repo ships lightweight HTTP services for use with integration tests.
+

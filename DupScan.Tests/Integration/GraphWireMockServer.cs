@@ -22,15 +22,16 @@ public class GraphWireMockServer : IDisposable
     {
         var body = JsonSerializer.Serialize(new { value = items });
         Server.Given(WireMockRequest.Create().WithPath("/drive/root/children").UsingGet())
-              .RespondWith(WireMockResponse.Create().WithBodyAsJson(body));
+              .RespondWith(Response.Create().WithBody(body).WithHeader("Content-Type", "application/json"));
     }
 
     public void ExpectShortcut(string sourceId, string targetId)
     {
-        Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}/shortcut").UsingPost())
-              .RespondWith(WireMockResponse.Create().WithStatusCode(200));
+        Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}/shortcut").UsingPost()
+                                         .WithBody($"{{\"targetId\":\"{targetId}\"}}"))
+              .RespondWith(Response.Create().WithStatusCode(200));
         Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}").UsingDelete())
-              .RespondWith(WireMockResponse.Create().WithStatusCode(200));
+              .RespondWith(Response.Create().WithStatusCode(200));
     }
 
     public void Dispose()

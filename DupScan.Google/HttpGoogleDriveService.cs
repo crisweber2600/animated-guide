@@ -1,8 +1,7 @@
 using System.Text.Json;
 using GoogleFile = Google.Apis.Drive.v3.Data.File;
-using DupScan.Google;
 
-namespace DupScan.Tests.Integration;
+namespace DupScan.Google;
 
 public class HttpGoogleDriveService : IGoogleDriveService
 {

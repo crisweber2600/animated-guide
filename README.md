@@ -5,6 +5,7 @@ It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis and the
 CLI can write summaries with the `--out` option.
+The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -22,6 +23,7 @@ CLI can write summaries with the `--out` option.
 
 ## Getting Started
 1. Run `dotnet restore` to download dependencies.
+   Use `dotnet restore -warnaserror` to catch version conflicts early.
 2. Build the solution with `dotnet build DupScan.sln`.
 3. Execute the CLI project using `dotnet run --project DupScan.Cli`.
 4. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
@@ -51,6 +53,8 @@ slipping in.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
 `GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
+Delete the cached authentication files in `~/.azure` if you need to reauthenticate with different credentials.
+You can pass a custom callback to `GraphClientFactory.Create` if you need to modify the device-code sign-in message or log additional details.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
@@ -61,6 +65,13 @@ BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows us
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
 credentials. Drive files are converted to `FileItem` objects for detection.
 The integration server returns stubbed JSON allowing tests to run offline.
+`GoogleDriveService` now creates shortcut files referencing the largest copy and
+removes the duplicates using the Drive API. Unit tests assert that the expected
+HTTP endpoints are invoked for each operation.
+
+When running locally you can swap in the `HttpGoogleDriveService` from the test
+project to point at a mock WireMock server. This makes it easy to develop
+against predictable Drive responses without network access.
 
 ## Extending Scenarios
 Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
@@ -76,8 +87,11 @@ to model different drive contents.
   space.
 - Specify provider roots to limit scanning to certain directories.
 - Provide one or more roots using `--root <path>` to scan specific folders.
+- Use `--link` to automatically replace redundant files with symbolic links.
+- Increase throughput with `--parallel 4` when linking many groups.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
+- Services are resolved via dependency injection, making customization easy.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
 - Multi-provider scenarios demonstrate parallel scanning across Google and Graph.

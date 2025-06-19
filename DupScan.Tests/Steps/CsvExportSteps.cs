@@ -18,6 +18,10 @@ public class CsvExportSteps
     {
         foreach (var row in table.Rows)
         {
+            var count = int.Parse(row["Count"]);
+            var recoverable = long.Parse(row["RecoverableBytes"]);
+            var size = count > 1 ? recoverable / (count - 1) : 0;
+
             var files = new List<FileItem>();
             int count = int.Parse(row["Count"]);
             long recoverable = long.Parse(row["RecoverableBytes"]);

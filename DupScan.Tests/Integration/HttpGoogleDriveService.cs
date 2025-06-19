@@ -20,15 +20,10 @@ public class HttpGoogleDriveService : IGoogleDriveService
         return wrapper?.files ?? new List<GoogleFile>();
     }
 
-    public Task CreateShortcutAsync(string fileId, string targetId)
-    {
-        return Task.CompletedTask;
-    }
 
-    public Task DeleteFileAsync(string fileId)
-    {
-        return Task.CompletedTask;
-    }
+    public Task CreateShortcutAsync(string fileId, string targetId) => Task.CompletedTask;
+
+    public Task DeleteFileAsync(string fileId) => Task.CompletedTask;
 
     private record FilesWrapper(List<GoogleFile> files);
 }

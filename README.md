@@ -30,7 +30,10 @@ CLI can write summaries with the `--out` option.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-10. Swap the default HTTP handlers with a custom factory when unit testing service classes.
+10. Scan multiple folders and export results:
+   `dotnet run --project DupScan.Cli -- --root ~/Downloads --root ~/Pictures --out dupes.csv`
+11. Replace redundant files with links using:
+   `dotnet run --project DupScan.Cli -- --root data --link`
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -82,8 +85,11 @@ to model different drive contents.
   space.
 - Specify provider roots to limit scanning to certain directories.
 - Provide one or more roots using `--root <path>` to scan specific folders.
+- Use `--link` to automatically replace redundant files with symbolic links.
+- Increase throughput with `--parallel 4` when linking many groups.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
+- Services are resolved via dependency injection, making customization easy.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
 - You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
 - Use the `--link` flag with the Google provider to automatically replace copies

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Microsoft.Graph.Models;
+using DriveItem = Microsoft.Graph.Models.DriveItem;
 using WireMock.Server;
 using WireMock.ResponseBuilders;
 using WireMockRequest = WireMock.RequestBuilders.Request;
@@ -26,7 +26,10 @@ public class GraphWireMockServer : IDisposable
 
     public void ExpectShortcut(string sourceId, string targetId)
     {
-        Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}/shortcut").UsingPost().WithBody($"{{\"targetId\":\"{targetId}\"}}"))
+        Server.Given(Request.Create()
+                .WithPath($"/drive/items/{sourceId}/shortcut")
+                .UsingPost()
+                .WithBody($"{{\"targetId\":\"{targetId}\"}}"))
               .RespondWith(Response.Create().WithStatusCode(200));
         Server.Given(WireMockRequest.Create().WithPath($"/drive/items/{sourceId}").UsingDelete())
               .RespondWith(Response.Create().WithStatusCode(200));

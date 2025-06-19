@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Microsoft.Graph.Models;
+using DriveItem = Microsoft.Graph.Models.DriveItem;
 using WireMock.Server;
 using WireMockRequest = WireMock.RequestBuilders.Request;
 using WireMockResponse = WireMock.ResponseBuilders.Response;

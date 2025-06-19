@@ -21,6 +21,7 @@ public static class GraphClientFactory
             TenantId = tenantId,
             ClientId = clientId,
             DeviceCodeCallback = (info, ct) =>
+
             {
                 Console.WriteLine(info.Message);
                 return Task.CompletedTask;

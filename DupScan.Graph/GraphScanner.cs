@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using DupScan.Core.Models;
 
+using DupScan.Orchestration;
+
 namespace DupScan.Graph;
 
-public class GraphScanner
+public class GraphScanner : IScanner
 {
     private readonly IGraphDriveService _drive;
 

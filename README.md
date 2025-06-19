@@ -9,7 +9,7 @@ CLI can write summaries with the `--out` option.
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
 - **DupScan.Adapters** – infrastructure and external integrations.
-- **DupScan.Orchestration** – coordination services.
+- **DupScan.Orchestration** – combines scanner results and links duplicates when requested.
 - **DupScan.Graph** – OneDrive/SharePoint integrations.
   Uses device-code authentication via Azure Identity to connect to Microsoft Graph.
 - **DupScan.Google** – Google Drive integrations.
@@ -31,6 +31,7 @@ CLI can write summaries with the `--out` option.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
 10. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
+11. Combine providers with the orchestrator service to analyze multiple drives.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -61,16 +62,22 @@ BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows us
 credentials. Drive files are converted to `FileItem` objects for detection.
 The integration server returns stubbed JSON allowing tests to run offline.
 
+## Orchestration
+`Orchestrator` aggregates results from any number of scanners and can invoke provider-specific link services.
+This allows automated duplicate cleanup across Graph and Google drives in one run.
+
 ## Extending Scenarios
 Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
 WireMock servers automatically respond using the provided tables making it easy
 to model different drive contents.
+- New orchestration scenarios demonstrate how multiple providers work together.
 
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
 - The `CsvExporter` service formats duplicate groups for easy reporting.
 - `--parallel` controls the worker channel degree of parallelism.
+- Use the orchestrator to combine Graph and Google scans in one command.
 - Inspect the generated CSV file to determine which groups reclaim the most
   space.
 - Specify provider roots to limit scanning to certain directories.

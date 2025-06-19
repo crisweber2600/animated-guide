@@ -1,10 +1,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DupScan.Core.Models;
+using DupScan.Orchestration;
 
 namespace DupScan.Graph;
 
-public class GraphLinkService
+public class GraphLinkService : ILinkService
 {
     private readonly IGraphDriveService _drive;
 

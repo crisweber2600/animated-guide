@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DupScan.Core\DupScan.Core.csproj" />
+    <ProjectReference Include="..\DupScan.Orchestration\DupScan.Orchestration.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,11 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DupScan.Core\DupScan.Core.csproj" />
+    <ProjectReference Include="..\DupScan.Orchestration\DupScan.Orchestration.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.62.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.62.0.2600" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.62.0.3155" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -60,6 +60,11 @@ can be linked using the new linking service.
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
 - `--parallel` controls the worker channel degree of parallelism.
+- The core library now provides a `WorkerQueue` based on `System.Threading.Channels`.
+- Google and Graph scanners automatically retry with quadratic back-off when 429 or 5xx errors occur.
+- A new BDD scenario verifies channel workers execute tasks in parallel.
+- Run `dotnet test` anytime you modify the code to ensure behavior remains correct.
+- Explore the CLI with `--verbose` to see back-off and parallelism in action.
 - Specify provider roots to limit scanning to certain directories.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.

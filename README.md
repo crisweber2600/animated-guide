@@ -3,7 +3,8 @@
 DupScan is an example solution demonstrating a multi-project layout using .NET 9.
 It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
-The `CsvHelper` package is used to export results for further analysis.
+The `CsvHelper` package is used to export results for further analysis and the
+CLI can write summaries with the `--out` option.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -19,11 +20,12 @@ The `CsvHelper` package is used to export results for further analysis.
 1. Run `dotnet restore` to download dependencies.
 2. Build the solution with `dotnet build DupScan.sln`.
 3. Execute the CLI project using `dotnet run --project DupScan.Cli`.
-4. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
-5. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
-6. Review coverage results in the generated `TestResults` directory.
-7. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
-8. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+4. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
+5. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
+6. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
+7. Review coverage results in the generated `TestResults` directory.
+8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
+9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -32,6 +34,9 @@ space savings. Groups are ordered by the `RecoverableBytes` value so the most
 impactful duplicates appear first. Reqnroll scenarios demonstrate how identical
 hashes are detected and ranked by recoverable bytes. Additional unit tests mock
 Graph responses with Moq to validate scanning logic.
+The new `CsvExport` feature file demonstrates how to save summaries.
+Unit tests now also verify CSV export formatting to keep regressions from
+slipping in.
 
 ## Microsoft Graph Scanning
 `GraphClientFactory` builds a `GraphServiceClient` using `DeviceCodeCredential`.
@@ -48,7 +53,10 @@ credentials. Drive files are converted to `FileItem` objects for detection.
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
+- The `CsvExporter` service formats duplicate groups for easy reporting.
 - `--parallel` controls the worker channel degree of parallelism.
+- Inspect the generated CSV file to determine which groups reclaim the most
+  space.
 - Specify provider roots to limit scanning to certain directories.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.

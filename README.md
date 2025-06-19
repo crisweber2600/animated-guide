@@ -13,8 +13,12 @@ CLI can write summaries with the `--out` option.
 - **DupScan.Graph** – OneDrive/SharePoint integrations.
   Uses device-code authentication via Azure Identity to connect to Microsoft Graph.
 - **DupScan.Google** – Google Drive integrations.
+- **DupScan.Graph** now includes a shortcut-based linker for duplicates.
+- **DupScan.Google** adds a matching link service for Google Drive files.
 - **DupScan.Cli** – command-line entry point built with System.CommandLine.
 - **DupScan.Tests** – xUnit and Reqnroll test suite with code coverage.
+- **Integration Servers** – WireMock-based Graph and Google mocks under
+  `DupScan.Tests/Integration` used by BDD scenarios.
 
 ## Getting Started
 1. Run `dotnet restore` to download dependencies.
@@ -46,10 +50,18 @@ detection.
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
 drive service to create the shortcut and delete the redundant file.
+Integration tests verify these HTTP interactions using the embedded Graph server.
 
 ## Google Drive Scanning
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
 credentials. Drive files are converted to `FileItem` objects for detection.
+The integration server returns stubbed JSON allowing tests to run offline.
+
+## Extending Scenarios
+Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
+WireMock servers automatically respond using the provided tables making it easy
+to model different drive contents.
+
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
@@ -58,5 +70,25 @@ credentials. Drive files are converted to `FileItem` objects for detection.
 - Inspect the generated CSV file to determine which groups reclaim the most
   space.
 - Specify provider roots to limit scanning to certain directories.
+- Provide one or more roots using `--root <path>` to scan specific folders.
+- Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
+
+
+## Docker Usage
+1. If the .NET SDK is missing, run `./dotnet-install.sh` to install locally.
+2. Build the container with `docker build -t dupsan .`.
+3. Run tests inside CI with `dotnet test --collect:"XPlat Code Coverage"`.
+4. Execute the image using `docker run --rm dupsan`.
+5. Provide credentials in `appsettings.json` or mount one via `-v $(pwd)/appsettings.json:/app/appsettings.json`.
+
+These steps show how to run the CLI without installing the SDK globally.
+
+## Improvements
+- Added a ready-to-use `Dockerfile` for container builds.
+- New CI workflow pushes images to Docker Hub.
+- Template `appsettings.json` clarifies required credentials.
+- Documented Docker build and run instructions.
+- Provided a reminder to use `dotnet-install.sh` when needed.
+

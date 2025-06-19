@@ -1,18 +1,20 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DupScan.Core.Models;
 using DupScan.Google;
+using DupScan.Tests.Integration;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
-using Moq;
 using Reqnroll;
 using Xunit;
 
 namespace DupScan.Tests.Steps;
 
 [Binding]
-public class GoogleScanningSteps
+public class GoogleScanningSteps : IDisposable
 {
     private readonly List<DriveFile> _files = new();
-    private readonly Mock<IGoogleDriveService> _mock = new();
+    private GoogleWireMockServer? _server;
     private IReadOnlyList<FileItem> _result = new List<FileItem>();
 
     [Given("Google Drive files")]
@@ -28,13 +30,16 @@ public class GoogleScanningSteps
                 Size = long.Parse(row["Size"])
             });
         }
+        _server = new GoogleWireMockServer();
+        _server.SetupFiles(_files);
     }
 
     [When("I scan Google Drive")]
     public async Task WhenIScanGoogleDrive()
     {
-        _mock.Setup(m => m.ListFilesAsync()).ReturnsAsync(_files);
-        var scanner = new GoogleScanner(_mock.Object);
+        if (_server == null) throw new InvalidOperationException("Server not started");
+        var service = new HttpGoogleDriveService(_server.Url);
+        var scanner = new GoogleScanner(service);
         _result = await scanner.ScanAsync();
     }
 
@@ -42,5 +47,10 @@ public class GoogleScanningSteps
     public void ThenTwoFileItemsShouldBeReturned()
     {
         Assert.Equal(2, _result.Count);
+    }
+
+    public void Dispose()
+    {
+        _server?.Dispose();
     }
 }

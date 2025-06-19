@@ -1,6 +1,9 @@
 using System.CommandLine;
 using DupScan.Core.Models;
 using DupScan.Core.Services;
+using DupScan.Graph;
+using DupScan.Google;
+using Microsoft.Extensions.DependencyInjection;
 
 var outOption = new Option<FileInfo?>("--out", "CSV output file path");
 var root = new RootCommand("Duplicate scanner") { outOption };
@@ -26,4 +29,5 @@ root.SetHandler((FileInfo? outFile) =>
 }, outOption);
 
 return root.Invoke(args);
+
 

@@ -10,9 +10,15 @@ public class DuplicateDetector
     {
         return files
             .GroupBy(f => f.Hash)
-            .Where(g => g.Count() > 1)
-            .Select(g => new DuplicateGroup(g.Key, g))
-            .OrderByDescending(g => g.RecoverableBytes)
+            .Select(g => new
+            {
+                Hash = g.Key,
+                Items = g.ToList(),
+                Recoverable = g.Sum(f => f.Size) - g.Max(f => f.Size)
+            })
+            .Where(g => g.Items.Count > 1)
+            .OrderByDescending(g => g.Recoverable)
+            .Select(g => new DuplicateGroup(g.Hash, g.Items))
             .ToList();
     }
 }

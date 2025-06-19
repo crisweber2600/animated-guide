@@ -43,4 +43,22 @@ public class GraphScannerTests
             f => Assert.Equal("h1", f.Hash),
             f => Assert.Equal("h2", f.Hash));
     }
+
+    [Fact]
+    public async Task ScanAsync_retries_on_transient_errors()
+    {
+        var response = new DriveItemCollectionResponse { Value = new List<DriveItem>() };
+        var mock = new Mock<IGraphDriveService>();
+        var ex = new ServiceException("err", null);
+        ex.ResponseStatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+        mock.SetupSequence(m => m.GetRootChildrenAsync())
+            .ThrowsAsync(ex)
+            .ReturnsAsync(response);
+
+        var scanner = new GraphScanner(mock.Object);
+        var result = await scanner.ScanAsync();
+
+        Assert.Empty(result);
+        mock.Verify(m => m.GetRootChildrenAsync(), Times.Exactly(2));
+    }
 }

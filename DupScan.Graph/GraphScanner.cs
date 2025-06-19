@@ -17,7 +17,7 @@ public class GraphScanner
 
     public async Task<IReadOnlyList<FileItem>> ScanAsync()
     {
-        var items = await _drive.GetRootChildrenAsync();
+        var items = await ExecuteWithBackoffAsync(() => _drive.GetRootChildrenAsync());
         return items.Value?
             .Where(i => i.File != null)
             .Select(i => new FileItem(
@@ -26,5 +26,22 @@ public class GraphScanner
                 i.File?.Hashes?.QuickXorHash ?? string.Empty,
                 i.Size ?? 0))
             .ToList() ?? new List<FileItem>();
+    }
+
+    private static async Task<T> ExecuteWithBackoffAsync<T>(Func<Task<T>> op, int maxAttempts = 5)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return await op();
+            }
+            catch (ServiceException ex)
+                when ((int)ex.ResponseStatusCode == 429 || (int)ex.ResponseStatusCode >= 500)
+            {
+                if (attempt >= maxAttempts) throw;
+                await Task.Delay(TimeSpan.FromSeconds(attempt * attempt));
+            }
+        }
     }
 }

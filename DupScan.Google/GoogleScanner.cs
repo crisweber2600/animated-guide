@@ -3,10 +3,11 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using DupScan.Core.Models;
+using DupScan.Orchestration;
 
 namespace DupScan.Google;
 
-public class GoogleScanner
+public class GoogleScanner : IScanner
 {
     private readonly IGoogleDriveService _drive;
 

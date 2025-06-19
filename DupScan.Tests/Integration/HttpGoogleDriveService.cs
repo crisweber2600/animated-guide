@@ -22,7 +22,8 @@ public class HttpGoogleDriveService : IGoogleDriveService
 
     public async Task CreateShortcutAsync(string fileId, string targetId)
     {
-        var content = new StringContent(JsonSerializer.Serialize(new { targetId }), System.Text.Encoding.UTF8, "application/json");
+        var json = JsonSerializer.Serialize(new { targetId });
+        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
         await _client.PostAsync($"/files/{fileId}/shortcut", content);
     }
 

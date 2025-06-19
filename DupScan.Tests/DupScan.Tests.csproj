@@ -33,6 +33,7 @@
     <ProjectReference Include="..\DupScan.Core\DupScan.Core.csproj" />
     <ProjectReference Include="..\DupScan.Graph\DupScan.Graph.csproj" />
     <ProjectReference Include="..\DupScan.Google\DupScan.Google.csproj" />
+    <ProjectReference Include="..\DupScan.Orchestration\DupScan.Orchestration.csproj" />
   </ItemGroup>
 
 </Project>

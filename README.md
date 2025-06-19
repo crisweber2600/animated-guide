@@ -10,7 +10,7 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
 - **DupScan.Adapters** – infrastructure and external integrations.
-- **DupScan.Orchestration** – coordination services.
+- **DupScan.Orchestration** – combines scanner results and links duplicates when requested.
 - **DupScan.Graph** – OneDrive/SharePoint integrations.
   Uses device-code authentication via Azure Identity to connect to Microsoft Graph.
 - **DupScan.Google** – Google Drive integrations.
@@ -32,10 +32,8 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-10. Use `--graph-url` when testing against the bundled WireMock server.
-11. Combine Google and Graph results by scanning both providers in parallel.
-12. Run `dotnet test --collect:"XPlat Code Coverage"` to confirm coverage exceeds 80%.
-13. Pass `--link` to automatically replace smaller duplicates with shortcuts.
+10. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
+11. Combine providers with the orchestrator service to analyze multiple drives.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -73,16 +71,22 @@ When running locally you can swap in the `HttpGoogleDriveService` from the test
 project to point at a mock WireMock server. This makes it easy to develop
 against predictable Drive responses without network access.
 
+## Orchestration
+`Orchestrator` aggregates results from any number of scanners and can invoke provider-specific link services.
+This allows automated duplicate cleanup across Graph and Google drives in one run.
+
 ## Extending Scenarios
 Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
 WireMock servers automatically respond using the provided tables making it easy
 to model different drive contents.
+- New orchestration scenarios demonstrate how multiple providers work together.
 
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
 - The `CsvExporter` service formats duplicate groups for easy reporting.
 - `--parallel` controls the worker channel degree of parallelism.
+- Use the orchestrator to combine Graph and Google scans in one command.
 - Inspect the generated CSV file to determine which groups reclaim the most
   space.
 - Specify provider roots to limit scanning to certain directories.

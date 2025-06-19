@@ -20,15 +20,15 @@ public class CsvExportSteps
         {
             var count = int.Parse(row["Count"]);
             var recoverable = long.Parse(row["RecoverableBytes"]);
-            var size = count > 1 ? recoverable / (count - 1) : 0;
-
             var files = new List<FileItem>();
-            int count = int.Parse(row["Count"]);
-            long recoverable = long.Parse(row["RecoverableBytes"]);
-            long size = count > 1 ? recoverable / (count - 1) : recoverable;
-            for (int i = 0; i < count; i++)
+            if (count >= 1)
+                files.Add(new FileItem("0", "f0", row["Hash"], recoverable + 1));
+            if (count >= 2)
+                files.Add(new FileItem("1", "f1", row["Hash"], recoverable));
+            for (int i = 2; i < count; i++)
             {
-                files.Add(new FileItem(i.ToString(), $"f{i}", row["Hash"], size));
+                files.Add(new FileItem(i.ToString(), $"f{i}", row["Hash"], 0));
+
             }
             _groups.Add(new DuplicateGroup(row["Hash"], files));
         }

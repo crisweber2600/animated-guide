@@ -4,8 +4,8 @@ DupScan is an example solution demonstrating a multi-project layout using .NET 9
 It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis.
-The test suite now ships with lightweight HTTP servers built using WireMock.Net,
-enabling realistic integration scenarios without hitting external APIs.
+The repo demonstrates both Google Drive and Microsoft Graph integrations and the
+tests use Reqnroll for behavior specifications.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -30,17 +30,7 @@ enabling realistic integration scenarios without hitting external APIs.
 6. Review coverage results in the generated `TestResults` directory.
 7. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 8. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-9. Execute only integration tests with `dotnet test --filter Category=integration`.
-
-## Authentication Setup
-1. Register a **public client** app in Microsoft Entra ID and note the client ID.
-   Enable the `Files.ReadWrite.All` application permission and grant admin consent.
-2. Create **OAuth desktop** credentials in Google Cloud Console and download the
-   client ID and secret JSON file.
-3. Supply the Graph client ID and tenant ID when constructing the `GraphClientFactory`.
-4. Pass the Google client ID and secret to `GoogleClientFactory.Create` when
-   authenticating.
-5. Cached tokens are stored under `~/.credentials/dup-scan-google` for reuse.
+9. Restore global tools with `dotnet tool restore` if required for decompilation or other utilities.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -54,11 +44,12 @@ Graph responses with Moq to validate scanning logic.
 `GraphClientFactory` builds a `GraphServiceClient` using `DeviceCodeCredential`.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
+`GraphDriveService` exposes methods that call the Graph API directly and reads the `quickXorHash` value for each file.
 
 ## Graph Linking
 `GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
 drive service to create the shortcut and delete the redundant file.
-Integration tests verify these HTTP interactions using the embedded Graph server.
+BDD scenarios in `DupScan.Tests` validate both scanning and linking workflows using the Reqnroll test runner.
 
 ## Google Drive Scanning
 `GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
@@ -85,21 +76,5 @@ to model different drive contents.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
-
-
-## Docker Usage
-1. If the .NET SDK is missing, run `./dotnet-install.sh` to install locally.
-2. Build the container with `docker build -t dupsan .`.
-3. Run tests inside CI with `dotnet test --collect:"XPlat Code Coverage"`.
-4. Execute the image using `docker run --rm dupsan`.
-5. Provide credentials in `appsettings.json` or mount one via `-v $(pwd)/appsettings.json:/app/appsettings.json`.
-
-These steps show how to run the CLI without installing the SDK globally.
-
-## Improvements
-- Added a ready-to-use `Dockerfile` for container builds.
-- New CI workflow pushes images to Docker Hub.
-- Template `appsettings.json` clarifies required credentials.
-- Documented Docker build and run instructions.
-- Provided a reminder to use `dotnet-install.sh` when needed.
+- You can inspect generated feature bindings in the `Features` folder to learn how tests are organized.
 

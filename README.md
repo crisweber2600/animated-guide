@@ -52,3 +52,19 @@ credentials. Drive files are converted to `FileItem` objects for detection.
 - Specify provider roots to limit scanning to certain directories.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
+
+## Docker Usage
+1. If the .NET SDK is missing, run `./dotnet-install.sh` to install locally.
+2. Build the container with `docker build -t dupsan .`.
+3. Run tests inside CI with `dotnet test --collect:"XPlat Code Coverage"`.
+4. Execute the image using `docker run --rm dupsan`.
+5. Provide credentials in `appsettings.json` or mount one via `-v $(pwd)/appsettings.json:/app/appsettings.json`.
+
+These steps show how to run the CLI without installing the SDK globally.
+
+## Improvements
+- Added a ready-to-use `Dockerfile` for container builds.
+- New CI workflow pushes images to Docker Hub.
+- Template `appsettings.json` clarifies required credentials.
+- Documented Docker build and run instructions.
+- Provided a reminder to use `dotnet-install.sh` when needed.

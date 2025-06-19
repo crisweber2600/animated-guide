@@ -32,6 +32,16 @@ enabling realistic integration scenarios without hitting external APIs.
 8. Customize provider roots and enable linking with `--link` and `--parallel` flags.
 9. Execute only integration tests with `dotnet test --filter Category=integration`.
 
+## Authentication Setup
+1. Register a **public client** app in Microsoft Entra ID and note the client ID.
+   Enable the `Files.ReadWrite.All` application permission and grant admin consent.
+2. Create **OAuth desktop** credentials in Google Cloud Console and download the
+   client ID and secret JSON file.
+3. Supply the Graph client ID and tenant ID when constructing the `GraphClientFactory`.
+4. Pass the Google client ID and secret to `GoogleClientFactory.Create` when
+   authenticating.
+5. Cached tokens are stored under `~/.credentials/dup-scan-google` for reuse.
+
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
 `DuplicateDetector` service groups files by hash and calculates the potential

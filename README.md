@@ -5,6 +5,7 @@ It now includes a core library with duplicate detection logic and BDD tests.
 Duplicate groups are ranked by how many bytes you can reclaim by linking files.
 The `CsvHelper` package is used to export results for further analysis and the
 CLI can write summaries with the `--out` option.
+The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 
 ## Projects
 - **DupScan.Core** – domain models and hash-based detection.
@@ -22,6 +23,7 @@ CLI can write summaries with the `--out` option.
 
 ## Getting Started
 1. Run `dotnet restore` to download dependencies.
+   Use `dotnet restore -warnaserror` to catch version conflicts early.
 2. Build the solution with `dotnet build DupScan.sln`.
 3. Execute the CLI project using `dotnet run --project DupScan.Cli`.
 4. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
@@ -30,10 +32,9 @@ CLI can write summaries with the `--out` option.
 7. Review coverage results in the generated `TestResults` directory.
 8. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
 9. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-10. Scan multiple folders and export results:
-   `dotnet run --project DupScan.Cli -- --root ~/Downloads --root ~/Pictures --out dupes.csv`
-11. Replace redundant files with links using:
-   `dotnet run --project DupScan.Cli -- --root data --link`
+10. Verify package versions with `dotnet list package --outdated` to stay current.
+11. Upgrade references when restore warnings like NU1603 or NU1902 appear.
+12. Keep an eye on advisory notices for security patches in Azure and Google SDKs.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The

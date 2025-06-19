@@ -18,4 +18,15 @@ public class GraphDriveService : IGraphDriveService
         // TODO: query Microsoft Graph for drive items
         return Task.FromResult(new DriveItemCollectionResponse());
     }
-}
+
+    public Task CreateShortcutAsync(string itemId, string targetId)
+    {
+        // TODO: call Graph API to replace item with shortcut
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteItemAsync(string itemId)
+    {
+        // TODO: delete the specified item
+        return Task.CompletedTask;
+    }

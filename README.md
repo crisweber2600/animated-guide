@@ -34,3 +34,16 @@ Moq to validate scanning logic.
 `GraphClientFactory` builds a `GraphServiceClient` using `DeviceCodeCredential`.
 `GraphScanner` retrieves drive items and converts them to `FileItem` records for
 detection.
+
+## Graph Linking
+`GraphLinkService` replaces smaller copies with Graph shortcuts. It calls a
+drive service to create the shortcut and delete the redundant file.
+
+## Google Drive Scanning
+`GoogleScanner` uses `GoogleDriveService` to list files via OAuth desktop
+credentials. Drive files are converted to `FileItem` objects for detection.
+
+## CLI Hints
+- Use `--out` to export CSV results via CsvHelper.
+- `--parallel` controls the worker channel degree of parallelism.
+- Specify provider roots to limit scanning to certain directories.

@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Graph" Version="5.27.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Reqnroll" Version="1.6.2" />
     <PackageReference Include="Reqnroll.xUnit" Version="1.6.2" />
     <PackageReference Include="xunit" Version="2.9.2" />
@@ -22,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DupScan.Core\DupScan.Core.csproj" />
+    <ProjectReference Include="..\DupScan.Graph\DupScan.Graph.csproj" />
   </ItemGroup>
 
 </Project>

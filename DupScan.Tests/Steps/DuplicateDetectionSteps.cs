@@ -32,9 +32,10 @@ public class DuplicateDetectionSteps
         _result = detector.FindDuplicates(_files);
     }
 
-    [Then("one group should contain {int} files with hash \"(.*)\"")]
-    public void ThenOneGroupShouldContainFilesWithHash(int count, string hash)
+    [Then("one group should contain {int} files with hash h{int}")]
+    public void ThenOneGroupShouldContainFilesWithHash(int count, int suffix)
     {
+        var hash = $"h{suffix}";
         var group = Assert.Single(_result, g => g.Hash == hash);
         Assert.Equal(count, group.Files.Count);
     }
@@ -44,5 +45,18 @@ public class DuplicateDetectionSteps
     {
         var group = Assert.Single(_result);
         Assert.Equal(bytes, group.RecoverableBytes);
+    }
+
+    [Then("groups should be ordered by recoverable bytes")]
+    public void ThenGroupsShouldBeOrderedByRecoverableBytes(Table table)
+    {
+        Assert.Equal(table.RowCount, _result.Count);
+        for (int i = 0; i < table.RowCount; i++)
+        {
+            var expectedHash = table.Rows[i]["Hash"];
+            var expectedRec = long.Parse(table.Rows[i]["Recoverable"]);
+            Assert.Equal(expectedHash, _result[i].Hash);
+            Assert.Equal(expectedRec, _result[i].RecoverableBytes);
+        }
     }
 }

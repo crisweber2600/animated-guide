@@ -1,0 +1,57 @@
+version: "1"
+tasks:
+  - id: register-azure
+    description: "Register Azure AD app with Files.Read.All and Files.ReadWrite.All"
+    manual: true
+    run: |
+      echo "Follow portal.azure.com instructions"
+  - id: google-oauth
+    description: "Create Google OAuth Desktop app"
+    manual: true
+    run: |
+      echo "Follow console.cloud.google.com instructions"
+  - id: setup-dotnet
+    description: "Install .NET 9 SDK"
+    run: |
+      curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+      chmod +x dotnet-install.sh
+      ./dotnet-install.sh --channel 9.0 --install-dir $HOME/.dotnet
+      echo "export PATH=\"$HOME/.dotnet:$PATH\"" >> $BASH_ENV
+  - id: create-solution
+    description: "Create DupScan solution and projects"
+    run: |
+      export PATH="$HOME/.dotnet:$PATH"
+      dotnet new sln -n DupScan
+      dotnet new classlib -n DupScan.Core
+      dotnet new classlib -n DupScan.Adapters
+      dotnet new classlib -n DupScan.Orchestration
+      dotnet new console -n DupScan.Cli
+      dotnet sln DupScan.sln add DupScan.Core/DupScan.Core.csproj
+      dotnet sln DupScan.sln add DupScan.Adapters/DupScan.Adapters.csproj
+      dotnet sln DupScan.sln add DupScan.Orchestration/DupScan.Orchestration.csproj
+      dotnet sln DupScan.sln add DupScan.Cli/DupScan.Cli.csproj
+  - id: add-packages
+    description: "Add library dependencies"
+    run: |
+      export PATH="$HOME/.dotnet:$PATH"
+      dotnet add DupScan.Adapters/DupScan.Adapters.csproj package Microsoft.Graph --version 5.*
+      dotnet add DupScan.Adapters/DupScan.Adapters.csproj package Google.Apis.Drive.v3
+      dotnet add DupScan.Orchestration/DupScan.Orchestration.csproj package CsvHelper
+      dotnet add DupScan.Cli/DupScan.Cli.csproj package System.CommandLine
+  - id: add-feature-files
+    description: "Add Reqnroll feature and step definitions"
+    run: |
+      mkdir -p tests/DupScan.Tests
+      dotnet new xunit -n DupScan.Tests -o tests/DupScan.Tests
+      dotnet sln DupScan.sln add tests/DupScan.Tests/DupScan.Tests.csproj
+      dotnet add tests/DupScan.Tests/DupScan.Tests.csproj package Reqnroll
+      echo "Feature: Duplicate detection" > tests/DupScan.Tests/DuplicatedFiles.feature
+  - id: run-tests
+    description: "Run tests with coverage"
+    run: |
+      export PATH="$HOME/.dotnet:$PATH"
+      dotnet test --collect:"XPlat Code Coverage"
+  - id: build-container
+    description: "Publish container image"
+    run: |
+      docker build -t dupscan:latest .

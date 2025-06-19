@@ -82,4 +82,13 @@ version: 1
           - run: dotnet test DupScan.sln --no-build --no-restore --collect:"XPlat Code Coverage"
     EOS
 
+# Documentation tasks
+- id: doc-goals
+  name: Document project goals
+  run: echo "\nAdded project goals" >> README.md
+
+- id: doc-codex
+  name: Document codex task usage
+  run: echo "\nAdded codex task section" >> README.md
+
 

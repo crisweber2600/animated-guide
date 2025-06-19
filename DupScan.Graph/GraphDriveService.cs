@@ -22,7 +22,8 @@ public class GraphDriveService : IGraphDriveService
             HttpMethod = Method.GET,
             UrlTemplate = "{+baseurl}/me/drive/root/children{?%24select}",
         };
-        info.PathParameters.Add("baseurl", _client.RequestAdapter.BaseUrl);
+        var baseUrl = _client.RequestAdapter.BaseUrl ?? string.Empty;
+        info.PathParameters.Add("baseurl", baseUrl);
         info.QueryParameters.Add("%24select", "id,name,size,file");
         var response = await _client.RequestAdapter.SendAsync(info, DriveItemCollectionResponse.CreateFromDiscriminatorValue, default);
         return response ?? new DriveItemCollectionResponse();
@@ -47,7 +48,8 @@ public class GraphDriveService : IGraphDriveService
             HttpMethod = Method.PATCH,
             UrlTemplate = "{+baseurl}/me/drive/items/{itemId}",
         };
-        info.PathParameters.Add("baseurl", _client.RequestAdapter.BaseUrl);
+        var baseUrl = _client.RequestAdapter.BaseUrl ?? string.Empty;
+        info.PathParameters.Add("baseurl", baseUrl);
         info.PathParameters.Add("itemId", itemId);
         info.SetContentFromParsable(_client.RequestAdapter, "application/json", update);
         await _client.RequestAdapter.SendNoContentAsync(info);
@@ -60,7 +62,8 @@ public class GraphDriveService : IGraphDriveService
             HttpMethod = Method.DELETE,
             UrlTemplate = "{+baseurl}/me/drive/items/{itemId}",
         };
-        info.PathParameters.Add("baseurl", _client.RequestAdapter.BaseUrl);
+        var baseUrl = _client.RequestAdapter.BaseUrl ?? string.Empty;
+        info.PathParameters.Add("baseurl", baseUrl);
         info.PathParameters.Add("itemId", itemId);
         await _client.RequestAdapter.SendNoContentAsync(info);
     }

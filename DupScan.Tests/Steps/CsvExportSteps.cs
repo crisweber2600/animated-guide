@@ -42,7 +42,7 @@ public class CsvExportSteps
         _csv = writer.ToString().Trim();
     }
 
-    [Then("the csv should contain")] 
+    [Then("the csv should contain")]
     public void ThenTheCsvShouldContain(Table table)
     {
         var lines = _csv.Split('\n');

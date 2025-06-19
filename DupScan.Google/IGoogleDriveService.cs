@@ -7,4 +7,8 @@ namespace DupScan.Google;
 public interface IGoogleDriveService
 {
     Task<IList<GoogleFile>> ListFilesAsync();
+
+    Task CreateShortcutAsync(string fileId, string targetId);
+
+    Task DeleteFileAsync(string fileId);
 }

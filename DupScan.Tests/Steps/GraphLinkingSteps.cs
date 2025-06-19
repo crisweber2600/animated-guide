@@ -7,6 +7,7 @@ using DupScan.Graph;
 using DupScan.Tests.Integration;
 using Reqnroll;
 using Xunit;
+using System.Threading.Tasks;
 
 namespace DupScan.Tests.Steps;
 

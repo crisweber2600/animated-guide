@@ -14,6 +14,8 @@ enabling realistic integration scenarios without hitting external APIs.
 - **DupScan.Graph** – OneDrive/SharePoint integrations.
   Uses device-code authentication via Azure Identity to connect to Microsoft Graph.
 - **DupScan.Google** – Google Drive integrations.
+- **DupScan.Graph** now includes a shortcut-based linker for duplicates.
+- **DupScan.Google** adds a matching link service for Google Drive files.
 - **DupScan.Cli** – command-line entry point built with System.CommandLine.
 - **DupScan.Tests** – xUnit and Reqnroll test suite with code coverage.
 - **Integration Servers** – WireMock-based Graph and Google mocks under
@@ -58,9 +60,36 @@ Edit the `.feature` files under `DupScan.Tests/Features` to define new cases.
 WireMock servers automatically respond using the provided tables making it easy
 to model different drive contents.
 
+
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
+- Enable automatic linking of duplicates with `--link`.
 - `--parallel` controls the worker channel degree of parallelism.
+- The core library now provides a `WorkerQueue` based on `System.Threading.Channels`.
+- Google and Graph scanners automatically retry with quadratic back-off when 429 or 5xx errors occur.
+- A new BDD scenario verifies channel workers execute tasks in parallel.
+- Run `dotnet test` anytime you modify the code to ensure behavior remains correct.
+- Explore the CLI with `--verbose` to see back-off and parallelism in action.
 - Specify provider roots to limit scanning to certain directories.
+- Provide one or more roots using `--root <path>` to scan specific folders.
+- Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
+
+
+## Docker Usage
+1. If the .NET SDK is missing, run `./dotnet-install.sh` to install locally.
+2. Build the container with `docker build -t dupsan .`.
+3. Run tests inside CI with `dotnet test --collect:"XPlat Code Coverage"`.
+4. Execute the image using `docker run --rm dupsan`.
+5. Provide credentials in `appsettings.json` or mount one via `-v $(pwd)/appsettings.json:/app/appsettings.json`.
+
+These steps show how to run the CLI without installing the SDK globally.
+
+## Improvements
+- Added a ready-to-use `Dockerfile` for container builds.
+- New CI workflow pushes images to Docker Hub.
+- Template `appsettings.json` clarifies required credentials.
+- Documented Docker build and run instructions.
+- Provided a reminder to use `dotnet-install.sh` when needed.
+

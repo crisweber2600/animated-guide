@@ -29,4 +29,21 @@ public class GoogleScannerTests
             f => Assert.Equal("h1", f.Hash),
             f => Assert.Equal("h2", f.Hash));
     }
+
+    [Fact]
+    public async Task ScanAsync_retries_on_transient_errors()
+    {
+        var driveFiles = new List<DriveFile> { new DriveFile { Id = "1", Name = "a", Md5Checksum = "h1", Size = 1 } };
+
+        var mock = new Mock<IGoogleDriveService>();
+        mock.SetupSequence(m => m.ListFilesAsync())
+            .ThrowsAsync(new global::Google.GoogleApiException("svc", "err") { HttpStatusCode = System.Net.HttpStatusCode.TooManyRequests })
+            .ReturnsAsync(driveFiles);
+
+        var scanner = new GoogleScanner(mock.Object);
+        var result = await scanner.ScanAsync();
+
+        Assert.Single(result);
+        mock.Verify(m => m.ListFilesAsync(), Times.Exactly(2));
+    }
 }

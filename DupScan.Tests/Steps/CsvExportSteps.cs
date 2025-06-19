@@ -18,10 +18,14 @@ public class CsvExportSteps
     {
         foreach (var row in table.Rows)
         {
+            var count = int.Parse(row["Count"]);
+            var recoverable = long.Parse(row["RecoverableBytes"]);
+            var size = count > 1 ? recoverable / (count - 1) : 0;
+
             var files = new List<FileItem>();
-            for (int i = 0; i < int.Parse(row["Count"]); i++)
+            for (int i = 0; i < count; i++)
             {
-                files.Add(new FileItem(i.ToString(), $"f{i}", row["Hash"], 1));
+                files.Add(new FileItem(i.ToString(), $"f{i}", row["Hash"], size));
             }
             _groups.Add(new DuplicateGroup(row["Hash"], files));
         }

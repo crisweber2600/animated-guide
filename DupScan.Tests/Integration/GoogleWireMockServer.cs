@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Google.Apis.Drive.v3.Data;
+using GoogleFile = Google.Apis.Drive.v3.Data.File;
 using WireMock.Server;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -17,7 +17,7 @@ public class GoogleWireMockServer : IDisposable
         Server = WireMockServer.Start();
     }
 
-    public void SetupFiles(IEnumerable<File> files)
+    public void SetupFiles(IEnumerable<GoogleFile> files)
     {
         var body = JsonSerializer.Serialize(new { files });
         Server.Given(Request.Create().WithPath("/files").UsingGet())

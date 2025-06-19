@@ -1,6 +1,7 @@
 Feature: Duplicate detection
   Files with identical hashes should be grouped and ranked.
 
+
   Scenario: Detecting duplicates by hash
     Given the following files
       | Id | Path   | Hash | Size |

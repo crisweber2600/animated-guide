@@ -48,7 +48,13 @@ credentials. Drive files are converted to `FileItem` objects for detection.
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
+- Enable automatic linking of duplicates with `--link`.
 - `--parallel` controls the worker channel degree of parallelism.
 - Specify provider roots to limit scanning to certain directories.
+- Provide one or more roots using `--root <path>` to scan specific folders.
+- Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Pass `--verbose` to the CLI for detailed logging of scanning operations.
+The CLI is wired up using `Microsoft.Extensions.DependencyInjection` so services
+like `GraphScanner`, `GoogleScanner` and `GraphLinkService` are resolved
+automatically.

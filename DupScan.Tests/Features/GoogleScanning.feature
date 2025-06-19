@@ -1,6 +1,7 @@
 Feature: Google scanning
   Lists files from Google Drive for duplicate detection.
 
+  @integration
   Scenario: Scanning Drive
     Given Google Drive files
       | Id | Name | Md5  | Size |

@@ -33,25 +33,27 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
    Use `dotnet restore -warnaserror` to catch version conflicts early.
 2. Build the solution with `dotnet build DupScan.sln`.
 3. Update `appsettings.json` with your Graph and Google credentials.
-4. Execute the CLI project using `dotnet run --project DupScan.Cli`.
-5. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
-6. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
-7. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
-8. Review coverage results in the generated `TestResults` directory.
-9. Limit coverage calculation to core projects via `--settings coverlet.runsettings`.
-10. Format source files with `dotnet format` before committing.
-11. Set `DOTNET_CLI_UI_LANGUAGE=en` to suppress localization noise during builds.
-12. Build the Docker image with `docker build -t dupscan .` for containerized runs.
-13. The `CliLinking` scenario demonstrates Graph shortcut creation using a mock server.
-14. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
-15. Customize provider roots and enable linking with `--link` and `--parallel` flags.
-16. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
-17. Combine providers with the orchestrator service to analyze multiple drives.
-18. Run `dotnet restore` before building to ensure all NuGet packages are available.
-19. `WorkerQueue` enables parallel linking by processing duplicate groups concurrently.
-20. Test coverage reports are stored under `DupScan.Tests/TestResults` for review.
-21. Use `GRAPH_BASEURL` to override the default Graph service URL during local testing.
-22. The CI workflow automatically runs `dotnet format` and the full test suite.
+4. Ensure the Graph `TenantId` and `ClientId` plus the Google `ClientId` and `ClientSecret` values are valid before scanning.
+5. Execute the CLI project using `dotnet run --project DupScan.Cli`.
+6. Try exporting results by running `dotnet run --project DupScan.Cli -- --out results.csv`.
+7. Install additional packages like `CsvHelper` with `dotnet add <proj> package <name>`.
+8. Run tests with coverage using `dotnet test DupScan.sln --collect:"XPlat Code Coverage"`.
+9. Review coverage results in the generated `TestResults` directory.
+10. Limit coverage calculation to core projects via `--settings coverlet.runsettings`.
+11. Format source files with `dotnet format` before committing.
+12. Set `DOTNET_CLI_UI_LANGUAGE=en` to suppress localization noise during builds.
+13. Build the Docker image with `docker build -t dupscan .` for containerized runs.
+14. The `CliLinking` scenario demonstrates Graph shortcut creation using a mock server.
+15. Try `dotnet run --project DupScan.Cli` to see duplicate detection in action.
+16. Customize provider roots and enable linking with `--link` and `--parallel` flags.
+17. Verify your environment with `dotnet test --no-build --no-restore` before making changes.
+18. Combine providers with the orchestrator service to analyze multiple drives.
+19. Run `dotnet restore` before building to ensure all NuGet packages are available.
+20. `WorkerQueue` enables parallel linking by processing duplicate groups concurrently.
+21. Test coverage reports are stored under `DupScan.Tests/TestResults` for review.
+22. Use `GRAPH_BASEURL` to override the default Graph service URL during local testing.
+23. The `GOOGLE_BASEURL` variable lets you target a mock Google server.
+24. The CI workflow automatically runs `dotnet format` and the full test suite.
 
 ## Duplicate Detection
 The core library exposes `FileItem` and `DuplicateGroup` models. The
@@ -106,6 +108,8 @@ Run `codex tasks` to list available tasks. Key ones include:
 - `restore` and `build` for setup
 - `test` to run the suite with coverage
 - `register-azure-app` and `register-google-app` to configure credentials
+- `run-cli` executes the command line tool using your settings
+- `e2e` restores, builds, tests and then runs the CLI in one go
 
 ## CLI Hints
 - Use `--out` to export CSV results via CsvHelper.
@@ -118,6 +122,9 @@ Run `codex tasks` to list available tasks. Key ones include:
 - Provide one or more roots using `--root <path>` to scan specific folders.
 - Use `--link` to automatically replace redundant files with symbolic links.
 - Increase throughput with `--parallel 4` when linking many groups.
+- After filling `appsettings.json` you can run `codex tasks run-cli`.
+- Inspect the generated `results.csv` for a summary of duplicate files.
+- For a full run including build and tests use `codex tasks e2e`.
 - Run `dotnet run --project DupScan.Cli --help` to see all available options.
 - Set `DOTNET_CLI_TELEMETRY_OPTOUT=1` to suppress CLI telemetry prompts.
 - Services are resolved via dependency injection, making customization easy.

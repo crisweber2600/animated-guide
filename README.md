@@ -134,3 +134,40 @@ Run `codex tasks` to list available tasks. Key ones include:
 - New `CliLinking` tests run the command line with `--link` against a WireMock server.
 - The repo ships lightweight HTTP services for use with integration tests.
 
+## Project Structure
+```
+DupScan.Core/           # domain models and CSV export helpers
+DupScan.Graph/          # Microsoft Graph scanner and link service
+DupScan.Google/         # Google Drive scanner and link service
+DupScan.Orchestration/  # orchestrator for multi-provider scans
+DupScan.Cli/            # command-line front end
+DupScan.Tests/          # Reqnroll scenarios and xUnit tests
+```
+
+## App Settings Example
+Add your credentials to an `appsettings.json` file at the repository root:
+```json
+{
+  "Graph": {
+    "TenantId": "00000000-0000-0000-0000-000000000000",
+    "ClientId": "00000000-0000-0000-0000-000000000000"
+  },
+  "Google": {
+    "ClientId": "your-client-id",
+    "ClientSecret": "your-secret"
+  }
+}
+```
+
+## Continuous Integration
+The included GitHub Actions workflow builds and tests the solution on every push.
+Coverage results are uploaded so you can track changes over time.
+Formatting errors fail the build, so run `dotnet format` locally before committing.
+
+## Contributing
+1. Create a feature branch from `main`.
+2. Run `codex tasks restore`, `codex tasks build` and `codex tasks test`.
+3. Add or update feature files under `DupScan.Tests/Features`.
+4. Submit a pull request describing your changes and any new Codex tasks.
+5. Ensure CI checks pass before merging.
+

@@ -17,6 +17,21 @@ version: 1
   name: Run tests with coverage
   run: dotnet test DupScan.sln --no-build --no-restore --collect:"XPlat Code Coverage"
 
+- id: run-cli
+  name: Run CLI with configured credentials
+  run: |
+    GRAPH_BASEURL=${GRAPH_BASEURL:-http://localhost:5000} \
+    dotnet run --project DupScan.Cli -- --out results.csv --link
+
+- id: e2e
+  name: Restore, build, test and run CLI
+  run: |
+    dotnet restore DupScan.sln
+    dotnet build DupScan.sln --no-restore
+    dotnet test DupScan.sln --no-build --no-restore --collect:"XPlat Code Coverage"
+    GRAPH_BASEURL=${GRAPH_BASEURL:-http://localhost:5000} \
+    dotnet run --project DupScan.Cli -- --out results.csv --link
+
 # Manual tasks
 - id: register-azure-app
   name: Register Azure AD App

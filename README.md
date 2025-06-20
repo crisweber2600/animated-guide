@@ -51,7 +51,7 @@ The projects target **.NET 9.0** so ensure you have the latest SDK installed.
 19. Run `dotnet restore` before building to ensure all NuGet packages are available.
 20. `WorkerQueue` enables parallel linking by processing duplicate groups concurrently.
 21. Test coverage reports are stored under `DupScan.Tests/TestResults` for review.
-22. Use `GRAPH_BASEURL` to override the default Graph service URL during local testing.
+22. Set `GRAPH_BASEURL` to override the default Graph service URL; the CLI reads this variable automatically.
 23. The `GOOGLE_BASEURL` variable lets you target a mock Google server.
 24. The CI workflow automatically runs `dotnet format` and the full test suite.
 
